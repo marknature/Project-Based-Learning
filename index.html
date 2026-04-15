@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Project Based Learning – Nature</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --card: #16161f;
+    --border: #252535;
+    --accent: #6ee7b7;
+    --accent2: #818cf8;
+    --accent3: #f9a8d4;
+    --gold: #fbbf24;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --white: #f8fafc;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 2rem 1rem 4rem;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* Ambient background */
+  body::before {
+    content: '';
+    position: fixed;
+    top: -30%;
+    left: -20%;
+    width: 60%;
+    height: 60%;
+    background: radial-gradient(ellipse, rgba(110,231,183,0.07) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  body::after {
+    content: '';
+    position: fixed;
+    bottom: -20%;
+    right: -20%;
+    width: 50%;
+    height: 50%;
+    background: radial-gradient(ellipse, rgba(129,140,248,0.07) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    max-width: 860px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Header */
+  .header {
+    text-align: center;
+    margin-bottom: 3rem;
+    animation: fadeDown 0.8s ease both;
+  }
+
+  .label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid rgba(110,231,183,0.3);
+    display: inline-block;
+    padding: 0.3rem 1rem;
+    border-radius: 2px;
+    margin-bottom: 1.2rem;
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 900;
+    color: var(--white);
+    line-height: 1.1;
+    margin-bottom: 0.8rem;
+  }
+
+  h1 span {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .subtitle {
+    font-size: 0.95rem;
+    color: var(--muted);
+    max-width: 520px;
+    margin: 0 auto;
+    line-height: 1.7;
+  }
+
+  /* Stats bar */
+  .stats {
+    display: flex;
+    justify-content: center;
+    gap: 2.5rem;
+    margin-bottom: 3rem;
+    flex-wrap: wrap;
+    animation: fadeUp 0.8s 0.2s ease both;
+  }
+
+  .stat {
+    text-align: center;
+  }
+
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--accent);
+    display: block;
+  }
+
+  .stat-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* Timeline */
+  .timeline {
+    position: relative;
+    padding-left: 1.5rem;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: linear-gradient(to bottom, transparent, var(--border) 10%, var(--border) 90%, transparent);
+  }
+
+  /* Cards */
+  .card {
+    position: relative;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.6rem 1.8rem;
+    margin-bottom: 1.4rem;
+    transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .card:nth-child(1) { animation-delay: 0.1s; }
+  .card:nth-child(2) { animation-delay: 0.2s; }
+  .card:nth-child(3) { animation-delay: 0.3s; }
+  .card:nth-child(4) { animation-delay: 0.4s; }
+  .card:nth-child(5) { animation-delay: 0.5s; }
+  .card:nth-child(6) { animation-delay: 0.6s; }
+  .card:nth-child(7) { animation-delay: 0.7s; }
+
+  .card:hover {
+    transform: translateX(6px);
+    border-color: rgba(110,231,183,0.3);
+    box-shadow: 0 0 30px rgba(110,231,183,0.05);
+  }
+
+  /* Timeline dot */
+  .card::before {
+    content: '';
+    position: absolute;
+    left: -1.9rem;
+    top: 1.9rem;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 10px var(--accent);
+  }
+
+  .card-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 0.9rem;
+    flex-wrap: wrap;
+  }
+
+  .card-meta {
+    flex: 1;
+  }
+
+  .company {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.3rem;
+  }
+
+  .role {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1.3;
+  }
+
+  .duration {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--muted);
+    white-space: nowrap;
+    padding-top: 0.2rem;
+  }
+
+  .desc {
+    font-size: 0.88rem;
+    line-height: 1.75;
+    color: #94a3b8;
+    margin-bottom: 1rem;
+  }
+
+  /* Skill tags */
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.06em;
+    padding: 0.25rem 0.6rem;
+    border-radius: 3px;
+    border: 1px solid;
+  }
+
+  .tag-green { color: var(--accent); border-color: rgba(110,231,183,0.25); background: rgba(110,231,183,0.05); }
+  .tag-purple { color: var(--accent2); border-color: rgba(129,140,248,0.25); background: rgba(129,140,248,0.05); }
+  .tag-pink { color: var(--accent3); border-color: rgba(249,168,212,0.25); background: rgba(249,168,212,0.05); }
+  .tag-gold { color: var(--gold); border-color: rgba(251,191,36,0.25); background: rgba(251,191,36,0.05); }
+
+  /* Credentials strip */
+  .credentials {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: 0.9rem;
+    padding-top: 0.9rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .cred {
+    font-size: 0.72rem;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+
+  .cred-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--gold);
+    flex-shrink: 0;
+  }
+
+  /* Footer note */
+  .footer-note {
+    text-align: center;
+    margin-top: 3rem;
+    padding: 1.5rem;
+    border: 1px dashed var(--border);
+    border-radius: 8px;
+    animation: fadeUp 0.8s 0.8s ease both;
+  }
+
+  .footer-note p {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--muted);
+    line-height: 1.8;
+    letter-spacing: 0.03em;
+  }
+
+  .footer-note strong {
+    color: var(--accent);
+    font-weight: 500;
+  }
+
+  /* LinkedIn copy block */
+  .copy-section {
+    margin-top: 2.5rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.8rem;
+    animation: fadeUp 0.8s 0.9s ease both;
+  }
+
+  .copy-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent2);
+    margin-bottom: 1rem;
+  }
+
+  .copy-text {
+    font-size: 0.85rem;
+    line-height: 1.9;
+    color: #94a3b8;
+    white-space: pre-wrap;
+  }
+
+  .copy-btn {
+    margin-top: 1.2rem;
+    background: none;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    padding: 0.5rem 1.2rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .copy-btn:hover {
+    background: rgba(110,231,183,0.1);
+  }
+
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 600px) {
+    .card-top { flex-direction: column; }
+    .stats { gap: 1.5rem; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="header">
+    <div class="label">LinkedIn · Featured Section</div>
+    <h1>Project Based<br><span>Learning</span></h1>
+    <p class="subtitle">A consolidated record of virtual internships, industry exposure, and hands-on skill development across AI, data science, and software engineering.</p>
+  </div>
+
+  <div class="stats">
+    <div class="stat">
+      <span class="stat-num">7</span>
+      <span class="stat-label">Internships</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">4+</span>
+      <span class="stat-label">Years Span</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">12+</span>
+      <span class="stat-label">Skills Gained</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">7</span>
+      <span class="stat-label">Certificates</span>
+    </div>
+  </div>
+
+  <div class="timeline">
+
+    <!-- 1. Python - CodeAlpha -->
+    <div class="card">
+      <div class="card-top">
+        <div class="card-meta">
+          <div class="company">CodeAlpha</div>
+          <div class="role">Python Programming Intern</div>
+        </div>
+        <div class="duration">Jun 2023 · 1 mo · Remote</div>
+      </div>
+      <p class="desc">Hands-on program strengthening Python fundamentals through real-world tasks — covering automation, file handling, OOP, and applied best practices under expert guidance.</p>
+      <div class="tags">
+        <span class="tag tag-green">Python</span>
+        <span class="tag tag-green">Automation</span>
+        <span class="tag tag-green">OOP</span>
+        <span class="tag tag-green">File Handling</span>
+        <span class="tag tag-green">Software Development</span>
+      </div>
+      <div class="credentials">
+        <span class="cred"><span class="cred-dot"></span>Certificate of Completion</span>
+        <span class="cred"><span class="cred-dot"></span>Internship Offer Letter</span>
+      </div>
+    </div>
+
+    <!-- 2. Generative AI - Prodigy -->
+    <div class="card">
+      <div class="card-top">
+        <div class="card-meta">
+          <div class="company">ProdigyInfoTech</div>
+          <div class="role">Generative AI Intern</div>
+        </div>
+        <div class="duration">Oct 2024 · 2 mos · Remote</div>
+      </div>
+      <p class="desc">Educational internship providing hands-on exposure to Generative AI as a valued team member. Collaborated on forward-looking AI projects contributing meaningfully to the field.</p>
+      <div class="tags">
+        <span class="tag tag-purple">Generative AI</span>
+        <span class="tag tag-purple">Python</span>
+        <span class="tag tag-purple">Data Architects</span>
+        <span class="tag tag-purple">LLMs</span>
+      </div>
+      <div class="credentials">
+        <span class="cred"><span class="cred-dot"></span>Letter of Recommendation</span>
+        <span class="cred"><span class="cred-dot"></span>Certificate</span>
+        <span class="cred"><span class="cred-dot"></span>Offer Letter</span>
+      </div>
+    </div>
+
+    <!-- 3. Python - Oasis Infobyte -->
+    <div class="card">
+      <div class="card-top">
+        <div class="card-meta">
+          <div class="company">Oasis Infobyte</div>
+          <div class="role">Python Programming Intern</div>
+        </div>
+        <div class="duration">Aug 2024 · 1 mo · Remote</div>
+      </div>
+      <p class="desc">Deepened Python expertise while diving into data science fundamentals. Focused on real-world problem solving, collaborative industry projects, and contributing meaningfully to the field. <em>Helped this job.</em></p>
+      <div class="tags">
+        <span class="tag tag-green">Python</span>
+        <span class="tag tag-green">Data Analysis</span>
+        <span class="tag tag-green">Data Architects</span>
+        <span class="tag tag-gold">+13 skills</span>
+      </div>
+      <div class="credentials">
+        <span class="cred"><span class="cred-dot"></span>Certificate of Completion</span>
+        <span class="cred"><span class="cred-dot"></span>Appreciation Certificate</span>
+        <span class="cred"><span class="cred-dot"></span>Offer Letter</span>
+      </div>
+    </div>
+
+    <!-- 4. InternCareer -->
+    <div class="card">
+      <div class="card-top">
+        <div class="card-meta">
+          <div class="company">InternCareer</div>
+          <div class="role">Machine Learning Intern</div>
+        </div>
+        <div class="duration">Jul 2024 · 3 mos · Remote</div>
+      </div>
+      <p class="desc">Virtual internship applying ML skills to real-world analysis tasks including data collection, visualization, and actionable insights. Received a Certificate of Completion and Letter of Recommendation upon successful delivery.</p>
+      <div class="tags">
+        <span class="tag tag-purple">Machine Learning</span>
+        <span class="tag tag-purple">Data Visualization</span>
+        <span class="tag tag-purple">Python</span>
+        <span class="tag tag-purple">Analytics</span>
+      </div>
+      <div class="credentials">
+        <span class="cred"><span class="cred-dot"></span>Certificate of Completion</span>
+        <span class="cred"><span class="cred-dot"></span>Letter of Recommendation</span>
+        <span class="cred"><span class="cred-dot"></span>Welcome Letter</span>
+      </div>
+    </div>
+
+    <!-- 5. AI Intern -->
+    <div class="card">
+      <div class="card-top">
+        <div class="card-meta">
+          <div class="company">Virtual Program</div>
+          <div class="role">Artificial Intelligence Intern</div>
+        </div>
+        <div class="duration">Mar 2024 – Jul 2024 · 2 mos</div>
+      </div>
+      <p class="desc">Comprehensive AI internship encompassing machine learning, deep learning, NLP, and model development. Designed to provide unique perspective on multiple facets of AI and contribute actively to AI-driven initiatives.</p>
+      <div class="tags">
+        <span class="tag tag-pink">Deep Learning</span>
+        <span class="tag tag-pink">NLP</span>
+        <span class="tag tag-pink">A.I. Model Dev</span>
+        <span class="tag tag-pink">Python</span>
+      </div>
+      <div class="credentials">
+        <span class="cred"><span class="cred-dot"></span>Certificate of Completion</span>
+        <span class="cred"><span class="cred-dot"></span>Letter of Recommendation</span>
+        <span class="cred"><span class="cred-dot"></span>Welcome Letter</span>
+      </div>
+    </div>
+
+    <!-- 6. Data Science Intern - MeriSKILL -->
+    <div class="card">
+      <div class="card-top">
+        <div class="card-meta">
+          <div class="company">MeriSKILL</div>
+          <div class="role">Data Science Intern</div>
+        </div>
+        <div class="duration">Jun 2024 – Jul 2024 · 2 mos · Remote</div>
+      </div>
+      <p class="desc">Completed two capstone projects: <strong style="color:var(--text)">Sales Data Analysis</strong> — using large datasets to identify trends, top-performing products, and revenue metrics to optimize sales strategy; and <strong style="color:var(--text)">HR Analytics</strong> — cleaning and visualising HR data to support employee performance, retention, and satisfaction decisions.</p>
+      <div class="tags">
+        <span class="tag tag-gold">Data Science</span>
+        <span class="tag tag-gold">Data Cleaning</span>
+        <span class="tag tag-gold">HR Analytics</span>
+        <span class="tag tag-gold">Visualization</span>
+        <span class="tag tag-gold">Python</span>
+        <span class="tag tag-gold">Data Architects</span>
+        <span class="tag tag-gold">Data Analysis</span>
+      </div>
+      <div class="credentials">
+        <span class="cred"><span class="cred-dot"></span>Certificate of Completion</span>
+        <span class="cred"><span class="cred-dot"></span>Welcome Letter</span>
+      </div>
+    </div>
+
+    <!-- 7. Data Analyst - MeriSKILL -->
+    <div class="card">
+      <div class="card-top">
+        <div class="card-meta">
+          <div class="company">MeriSKILL</div>
+          <div class="role">Data Analyst Intern</div>
+        </div>
+        <div class="duration">Jun 2024 – Jul 2024 · 2 mos · Remote</div>
+      </div>
+      <p class="desc">Focused internship program with two analytical projects — Sales Analysis and HR Analytics/Visualization — delivering data-driven recommendations and stakeholder-ready dashboards demonstrating the value of analytics in strategic decision-making.</p>
+      <div class="tags">
+        <span class="tag tag-green">Data Analysis</span>
+        <span class="tag tag-green">Data Architects</span>
+        <span class="tag tag-green">Python</span>
+        <span class="tag tag-green">+11 skills</span>
+      </div>
+      <div class="credentials">
+        <span class="cred"><span class="cred-dot"></span>Welcome Letter</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- LinkedIn Copy Section -->
+  <div class="copy-section">
+    <div class="copy-label">✦ Ready to paste · LinkedIn Project Description</div>
+    <pre class="copy-text" id="liText">📌 PROJECT BASED LEARNING — Virtual Internship Portfolio
+
+Over the past few years, I have completed 7 industry-recognised virtual internships spanning Python programming, Generative AI, Machine Learning, Artificial Intelligence, Data Science, and Data Analytics. Each program was project-driven, certificate-verified, and mentored by industry professionals.
+
+🔹 Python Programming Intern — CodeAlpha (Jun 2023)
+Built real-world Python projects covering automation, OOP, and file handling.
+
+🔹 Generative AI Intern — ProdigyInfoTech (Oct–Nov 2024)
+Gained hands-on experience with GenAI tools and collaborative AI project delivery.
+
+🔹 Python Programming Intern — Oasis Infobyte (Aug 2024)
+Deepened Python and data science skills through real-world industry tasks.
+
+🔹 Machine Learning Intern — InternCareer (Jul–Sep 2024)
+Applied ML models to real datasets; delivered analysis, visualisations & insights.
+
+🔹 Artificial Intelligence Intern — Virtual Program (Mar–Jul 2024)
+Covered ML, deep learning, NLP, and model development pipelines end-to-end.
+
+🔹 Data Science Intern — MeriSKILL (Jun–Jul 2024)
+Projects: Sales Data Analysis & HR Analytics — insights, trends & dashboards.
+
+🔹 Data Analyst Intern — MeriSKILL (Jun–Jul 2024)
+Delivered stakeholder-ready data visualisations and strategic recommendations.
+
+🏅 Credentials: 7 Certificates of Completion · 3 Letters of Recommendation
+🛠 Skills: Python · Machine Learning · Generative AI · Deep Learning · NLP · Data Analysis · Data Visualisation · Data Architects · Automation · OOP · A.I. Model Development · HR Analytics</pre>
+    <button class="copy-btn" onclick="copyText()">⌘ COPY FOR LINKEDIN</button>
+  </div>
+
+  <div class="footer-note">
+    <p>
+      <strong>How to add this on LinkedIn:</strong><br>
+      Profile → Add section → Projects → Title: <strong>"Project Based Learning"</strong><br>
+      Paste the description above · Set dates · Associate with Africa University<br>
+      Upload certificates as media files for maximum recruiter visibility.
+    </p>
+  </div>
+
+</div>
+
+<script>
+  function copyText() {
+    const text = document.getElementById('liText').innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = document.querySelector('.copy-btn');
+      btn.textContent = '✓ COPIED!';
+      btn.style.color = '#6ee7b7';
+      setTimeout(() => {
+        btn.textContent = '⌘ COPY FOR LINKEDIN';
+        btn.style.color = '';
+      }, 2000);
+    });
+  }
+</script>
+</body>
+</html>
